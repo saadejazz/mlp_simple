@@ -1,5 +1,7 @@
 # Neural Network Task 2
 
+All code is in the file [code.py](https://github.com/saadejazz/mlp_simple/blob/master/code.py).  
+
 ## 1.1. Leaky Relu  
 
 Leaky Relu has been added to the ```Activations``` class. All methods of the ```Activations``` class are static.  
@@ -116,5 +118,6 @@ plt.scatter(X[idx0, 0], X[idx0, 1], marker='o', c="blue", edgecolors="white", la
 plt.show()
 ```
 
+### Decision Boundary  
 
-
+![Decision Boundary](https://github.com/saadejazz/mlp_simple/blob/master/decision_boundary.png)  
