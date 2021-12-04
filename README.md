@@ -81,7 +81,7 @@ def train(self, X, Y, n_epochs = 500, batch_size = 16, loss_func = "mse", l_rate
 
 ## 2. Classification Test  
 
-Generated data is augmented and trained on the structure defined in the task. The result and decision boundaries are then plotted. The main code is as follows:  
+Generated data is augmented and trained on the structure defined in the task. The result and decision boundaries are then plotted. The parameter for leaky Relu is set to 0.01, and the loss function used is ```binary cross entropy```. The main code is as follows:  
 
 ```python
 X, Y = gen_train_data()
