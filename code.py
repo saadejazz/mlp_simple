@@ -185,7 +185,7 @@ class NeuralNetwork():
             
             # using Kaiming initialization only on weights and not biases
             param = self.net_params["w" + str(i)]
-            self.net_params["w" + str(i)] = np.sqrt(2/((1 + leak * leak)\
+            self.net_params["w" + str(i)] = np.sqrt(1/((1 + leak * leak)\
                                             * param.shape[0])) * np.random.randn(*param.shape)
             
             # using random initialization on bias if it is included
