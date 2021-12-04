@@ -374,7 +374,7 @@ if __name__ == "__main__":
     
     # build and train model
     nn = NeuralNetwork(structure)
-    nn.train(X, Y, n_epochs=1000, batch_size=8, rand_scale = 0.1, l_rate = 0.001, loss_func = "binary_cross_entropy")
+    nn.train(X, Y, n_epochs = 1000, batch_size = 8, rand_scale = 0.1, l_rate = 0.001, loss_func = "binary_cross_entropy")
 
     # retrieve the augmented data from the model -- optional
     X = nn.X
