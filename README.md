@@ -21,7 +21,7 @@ def leaky_relu(inp, derivative = False, leak = 0.01):
     return out
 ```
 
-## 2.2. Data Augmentation  
+## 1.2. Data Augmentation  
 
 A function to add random noise to the data is created. This function takes a ```rand_scale``` as argument to scale the noise. The data generated after noise is added to the original data. The function is as follows:  
 
@@ -33,7 +33,7 @@ def augment_data(data, rand_scale = 0.1):
     return data + rand_scale * np.random.randn(*data.shape)
 ```  
 
-## 3.3. Mini-batch gradient descent  
+## 1.3. Mini-batch gradient descent  
 
 The code is restructured to a vectorized implementation, and updates are made in batches. The new train function is as follows:  
 
