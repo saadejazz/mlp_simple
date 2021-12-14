@@ -38,13 +38,13 @@ def augment_data(data, rand_scale = 0.1):
 The code is restructured to a vectorized implementation, and updates are made in batches. The new train function is as follows:  
 
 ```python
-def train(self, X, Y, n_epochs = 500, batch_size = 16, loss_func = "mse", l_rate = 0.001, rand_scale = 0.1, verbose = True):
+def train(self, X, Y, n_epochs = 500, batch_size = 16, loss_func = "mse",\
+          l_rate = 0.001, rand_scale = 0.1, verbose = True):
     '''
     main function to train. can specify number of epochs, batch size, 
     loss function (only those available in the Losses class), learning rate,
     random scaling for data augmentation and verbosity.
     '''
-    
     # augmenting data
     X = np.concatenate((X, augment_data(X, rand_scale)))
     Y = np.concatenate((Y, Y))
@@ -84,7 +84,7 @@ def train(self, X, Y, n_epochs = 500, batch_size = 16, loss_func = "mse", l_rate
 Generated data is augmented and trained on the structure defined in the task. The result and decision boundaries are then plotted. The parameter for leaky Relu is set to 0.01, and the loss function used is ```binary cross entropy```. The main code is as follows:  
 
 ```python
-X, Y = gen_train_data()
+X, Y = gen_train_data(n = 40)
     
 # structure of the neural network model
 structure = [{'type': 'input', 'units': 2},
@@ -94,7 +94,12 @@ structure = [{'type': 'input', 'units': 2},
 
 # build and train model
 nn = NeuralNetwork(structure)
-nn.train(X, Y, n_epochs = 1000, batch_size = 8, rand_scale = 0.1, l_rate = 0.001, loss_func = "binary_cross_entropy")
+nn.train(X, Y, n_epochs = 1000, batch_size = 8, rand_scale = 0.1,\
+         l_rate = 0.001, loss_func = "binary_cross_entropy")
+
+# retrieve the augmented data from the model -- optional
+X = nn.X
+Y = nn.Y
 
 # show decision boundary on a plot
 # creating a mesh of values
@@ -106,7 +111,7 @@ h = nn.predict(X_vis)
 h = np.array(h) >= 0.5
 h = np.reshape(h, (len(xx), len(yy)))
 
-# indices for points
+# indices for points corresponding to both classes
 idx0 = [i for i, v in enumerate(Y) if v == 0]
 idx1 = [i for i, v in enumerate(Y) if v == 1]
 
@@ -114,6 +119,18 @@ idx1 = [i for i, v in enumerate(Y) if v == 1]
 plt.contourf(xx, yy, h, cmap='jet')
 plt.scatter(X[idx1, 0], X[idx1, 1], marker='^', c="red", edgecolors="white", label="class 1")
 plt.scatter(X[idx0, 0], X[idx0, 1], marker='o', c="blue", edgecolors="white", label="class 0")
+
+# title and axes labels
+plt.title("Decision boundary for classification problem")
+plt.xlabel("Index 0")
+plt.ylabel("Index 1")
+
+# show legend
+red_triangle = mlines.Line2D([], [], color='red', marker='^', linestyle='None',
+                            markersize=10, label='Class 0')
+blue_circle = mlines.Line2D([], [], color='blue', marker='o', linestyle='None',
+                            markersize=10, label='Class 1')
+plt.legend(handles = [red_triangle, blue_circle])
 
 plt.show()
 ```

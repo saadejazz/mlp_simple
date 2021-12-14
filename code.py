@@ -1,6 +1,7 @@
 import numpy as np
 from sklearn import metrics
 import matplotlib.pyplot as plt
+import matplotlib.lines as mlines
 
 class Activations():
     '''
@@ -56,7 +57,7 @@ class Activations():
         if derivative:
             out = np.where(out >= 0, 1, 0)
         else:
-            out = np.where(out >=0, out, 0)
+            out = np.where(out >= 0, out, 0)
         return out
     
     @staticmethod
@@ -68,9 +69,9 @@ class Activations():
         '''
         out = np.array(inp)
         if derivative:
-            out = np.where(out >=0, 1, leak)
+            out = np.where(out >= 0, 1, leak)
         else:
-            out = np.where(out >=0, out, leak * out)
+            out = np.where(out >= 0, out, leak * out)
         return out
 
 class Losses():
@@ -109,7 +110,6 @@ class Losses():
         '''
         expected = np.array(expected)
         outputs = np.array(outputs)
-        # return -1 * expected * np.log(outputs) - (1 - expected) * np.log(1 - outputs)
         return metrics.log_loss(expected, outputs)
 
 class NeuralNetwork():
@@ -136,7 +136,6 @@ class NeuralNetwork():
         fully-connectedlayers. can opt for biases, and choose activation
         functions available in the Activations class.
         '''
-        
         # ensure that the first layer is an input layer
         try:
             assert(structure[0]["type"] == "input")
@@ -292,13 +291,13 @@ class NeuralNetwork():
         '''
         return sum(self.predict(inp) == out)[0]/out.shape[0] * 100
     
-    def train(self, X, Y, n_epochs = 500, batch_size = 16, loss_func = "mse", l_rate = 0.001, rand_scale = 0.1, verbose = True):
+    def train(self, X, Y, n_epochs = 500, batch_size = 16, loss_func = "mse",\
+              l_rate = 0.001, rand_scale = 0.1, verbose = True):
         '''
         main function to train. can specify number of epochs, batch size, 
         loss function (only those available in the Losses class), learning rate,
         random scaling for data augmentation and verbosity.
         '''
-        
         # augmenting data
         X = np.concatenate((X, augment_data(X, rand_scale)))
         Y = np.concatenate((Y, Y))
@@ -307,8 +306,8 @@ class NeuralNetwork():
         self.X = X
         self.Y = Y
 
+        # initialize weights of the model and determine number of batches to split into
         self.initialize_weights()
-        
         num_batches = int(np.ceil(X.shape[0]/batch_size))
         
         for epoch in range(n_epochs):
@@ -318,7 +317,7 @@ class NeuralNetwork():
                 print("Loss after ", epoch, " epoch(s): ", self.calc_loss(Y, loss_func),\
                       ", Accuracy: ", self.accuracy(X, Y))
             
-            # can be SGD, mini-batch, or full-batch depending on the batch_size parameter
+            # can be either SGD, mini-batch, or full-batch (depending on the batch_size parameter)
             for i in range(num_batches):
                 
                 # slice the data according to batch size
@@ -364,7 +363,7 @@ def augment_data(data, rand_scale = 0.1):
 
 if __name__ == "__main__":
 
-    X, Y = gen_train_data()
+    X, Y = gen_train_data(n = 40)
     
     # structure of the neural network model
     structure = [{'type': 'input', 'units': 2},
@@ -374,7 +373,8 @@ if __name__ == "__main__":
     
     # build and train model
     nn = NeuralNetwork(structure)
-    nn.train(X, Y, n_epochs = 1000, batch_size = 8, rand_scale = 0.1, l_rate = 0.001, loss_func = "binary_cross_entropy")
+    nn.train(X, Y, n_epochs = 1000, batch_size = 8, rand_scale = 0.1,\
+             l_rate = 0.001, loss_func = "binary_cross_entropy")
 
     # retrieve the augmented data from the model -- optional
     X = nn.X
@@ -390,7 +390,7 @@ if __name__ == "__main__":
     h = np.array(h) >= 0.5
     h = np.reshape(h, (len(xx), len(yy)))
 
-    # indices for points
+    # indices for points corresponding to both classes
     idx0 = [i for i, v in enumerate(Y) if v == 0]
     idx1 = [i for i, v in enumerate(Y) if v == 1]
 
@@ -398,5 +398,17 @@ if __name__ == "__main__":
     plt.contourf(xx, yy, h, cmap='jet')
     plt.scatter(X[idx1, 0], X[idx1, 1], marker='^', c="red", edgecolors="white", label="class 1")
     plt.scatter(X[idx0, 0], X[idx0, 1], marker='o', c="blue", edgecolors="white", label="class 0")
+    
+    # title and axes labels
+    plt.title("Decision boundary for classification problem")
+    plt.xlabel("Index 0")
+    plt.ylabel("Index 1")
+
+    # show legend
+    red_triangle = mlines.Line2D([], [], color='red', marker='^', linestyle='None',
+                                markersize=10, label='Class 0')
+    blue_circle = mlines.Line2D([], [], color='blue', marker='o', linestyle='None',
+                                markersize=10, label='Class 1')
+    plt.legend(handles = [red_triangle, blue_circle])
 
     plt.show()
