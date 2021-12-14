@@ -33,6 +33,20 @@ def augment_data(data, rand_scale = 0.1):
     return data + rand_scale * np.random.randn(*data.shape)
 ```  
 
+This function is called in the ```train``` method of the ```NeuralNetwork``` class to create a larger training dataset.  
+```python
+def train(self, X, Y, n_epochs = 500, batch_size = 16, loss_func = "mse",\
+          l_rate = 0.001, rand_scale = 0.1, verbose = True):
+    '''
+    main function to train. can specify number of epochs, batch size, 
+    loss function (only those available in the Losses class), learning rate,
+    random scaling for data augmentation and verbosity.
+    '''
+    # augmenting data
+    X = np.concatenate((X, augment_data(X, rand_scale)))
+    Y = np.concatenate((Y, Y))
+```
+
 ## 1.3. Mini-batch gradient descent  
 
 The code is restructured to a vectorized implementation, and updates are made in batches. The new train function is as follows:  
