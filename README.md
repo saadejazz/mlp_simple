@@ -149,6 +149,6 @@ plt.legend(handles = [red_triangle, blue_circle])
 plt.show()
 ```
 
-### Decision Boundary with 87.5% training accuracy  
+### Decision Boundary with 92.5% training accuracy  
 
 ![Decision Boundary](https://github.com/saadejazz/mlp_simple/blob/master/decision_boundary.png)  
